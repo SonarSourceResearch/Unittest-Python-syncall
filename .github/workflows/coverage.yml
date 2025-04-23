@@ -27,12 +27,9 @@ jobs:
       - name: Coverage
         run: |
           poetry run coverage run -m pytest --doctest-modules
-          poetry run coverage report
-      # Using --service=github + secrets.GITHUB_TOKEN for builds originating from PRs to work
-      # Not sure if both are required
-      # https://github.com/TheKevJames/coveralls-python/issues/252
-      - name: Coveralls
-        run: poetry run coveralls --service=github || poetry run coveralls
-        env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          poetry run coverage xml
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: coverage.xml
